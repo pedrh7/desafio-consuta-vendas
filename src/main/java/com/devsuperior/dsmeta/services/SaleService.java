@@ -1,7 +1,9 @@
 package com.devsuperior.dsmeta.services;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.devsuperior.dsmeta.dto.SaleSummaryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,5 +68,34 @@ public class SaleService {
 		Pageable pageable = PageRequest.of(page, size);
 
 		return repository.searchReport(min, max, name, pageable);
+	}
+	public List<SaleSummaryDTO> getSummary(
+			String minDate,
+			String maxDate
+	) {
+
+		LocalDate today = LocalDate.ofInstant(
+				Instant.now(),
+				ZoneId.systemDefault()
+		);
+
+		LocalDate min;
+		LocalDate max;
+
+		if (maxDate.equals("")) {
+			max = today;
+		}
+		else {
+			max = LocalDate.parse(maxDate);
+		}
+
+		if (minDate.equals("")) {
+			min = max.minusYears(1);
+		}
+		else {
+			min = LocalDate.parse(minDate);
+		}
+
+		return repository.searchSummary(min, max);
 	}
 }
